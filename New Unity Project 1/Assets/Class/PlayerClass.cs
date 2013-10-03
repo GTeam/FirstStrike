@@ -58,16 +58,29 @@ public class PlayerClass : MonoBehaviour {
 	}
 	void ChangeSpeed(){
 		
+		//float dot = Vector3.Dot(transform.forward, Vector3.up);//1-направлен вверх, -1-направлен вниз, 0-направлен вбок.
+//bool upOrDn = dot > 0f;
 		
-		
-			if(transform.rotation.x < 90 && transform.rotation.x > 0 ){
-				if(speed >= 0.1f)
+		if(Vector3.Dot(transform.forward, Vector3.up) > 0f)
+		{
+			if(speed >= 0.1f)
 					speed -= 0.1f;
-			}
-			else {
+		}
+		else
+		{
 			if(speed < 15)
 				speed += 0.1f;
-			}
+			
+			
+		}
+//			if(transform.rotation.x < 90 && transform.rotation.x > 0 ){
+//				if(speed >= 0.1f)
+//					speed -= 0.1f;
+//			}
+//			else {
+//			if(speed < 15)
+//				speed += 0.1f;
+//			}
 		
 			
 		
@@ -76,12 +89,7 @@ public class PlayerClass : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	//inside the Update method
-		
 		ChangeSpeed();
-		
-		//transform.Translate(new Vector3(0,0,speed * Time.deltaTime));
-		//transform.Rotate(new Vector3(0,Input.GetAxis("Horizontal"),0));
-		//transform.Rotate(new Vector3(Input.GetAxis("Horizontal"), 0, 0));
 			
 		if(Input.GetKey("right"))
 		{
