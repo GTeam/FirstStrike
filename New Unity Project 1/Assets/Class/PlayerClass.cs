@@ -2,90 +2,44 @@ using UnityEngine;
 using System.Collections;
 
 public class PlayerClass : MonoBehaviour {
-	 private float force;
+	 
 
-//    public float speed;
-//
-//    public Vector3 rotSpeedMult = new Vector3(5f, 5f, 10f);
-//
-//    public float rotSpeedMax = 45f;
-//
-//    private Quaternion newRotation;
-//
-//    private Vector3 inpDamp;
-//        
-//    void Start()
-//    {
-//        Screen.lockCursor = !Screen.lockCursor;
-//    }
-//
-//        void Update ()
-//        {
-//            inpDamp += new Vector3(
-//
-//                -Input.GetAxis("Mouse Y")*rotSpeedMult.x*Time.deltaTime,
-//
-//                Input.GetAxis("Mouse X")*rotSpeedMult.y*Time.deltaTime,
-//
-//                -Input.GetAxis("Horizontal")*rotSpeedMult.z*Time.deltaTime);
-//
-//        inpDamp.x = Mathf.Clamp(inpDamp.x, -180f, 180f);
-//        inpDamp.y = Mathf.Clamp(inpDamp.y, -180f, 180f);
-//        inpDamp.z = Mathf.Clamp(inpDamp.z, -180f, 180f);
-//
-//
-//            newRotation = Quaternion.Euler(inpDamp);
-//
-//            transform.rotation = Quaternion.RotateTowards(transform.rotation, transform.rotation*newRotation,
-//                                                          rotSpeedMax*Time.deltaTime);
-//            inpDamp = Vector3.Lerp(inpDamp,Vector3.zero,3f*Time.deltaTime);
-//
-//            force = Input.GetAxis("Vertical");
-//
-//        if(Input.GetKeyDown(KeyCode.F1))
-//            Screen.lockCursor = !Screen.lockCursor;
-//        }
-//
-//    void FixedUpdate()
-//    {
-//        rigidbody.AddRelativeForce(Vector3.forward*(force*speed),ForceMode.Acceleration);
-//    }
 	public float speed = 2;
 	public float nitro = 100;
+	public float forceUp = 9.8f;
+	public const float MaxForceUp = 15;
+	public float forceForw = 5;
 	// Use this for initialization
+	
+	
+	float CalculateForceUp(float angle)
+	{		print (angle);
+		return (MaxForceUp - Mathf.Abs( 315 - angle) * (MaxForceUp / 45));		
+	}
 	void Start () {
 	
 	}
-	void ChangeSpeed(){
+	void ChangeSpeed(){		
 		
-		//float dot = Vector3.Dot(transform.forward, Vector3.up);//1-направлен вверх, -1-направлен вниз, 0-направлен вбок.
-//bool upOrDn = dot > 0f;
-		
+		float angolik = 0;
+		Vector3 lol = Vector3.zero;
+		transform.rotation.ToAngleAxis(out angolik,out lol);
 		if(Vector3.Dot(transform.forward, Vector3.up) > 0f)
 		{
-			if(speed >= 0.1f)
-					speed -= 0.1f;
+			if(forceUp <= MaxForceUp  )
+				forceUp = CalculateForceUp(angolik);		
 		}
 		else
 		{
-			if(speed < 15)
-				speed += 0.1f;
-			
-			
-		}
-//			if(transform.rotation.x < 90 && transform.rotation.x > 0 ){
-//				if(speed >= 0.1f)
-//					speed -= 0.1f;
-//			}
-//			else {
-//			if(speed < 15)
-//				speed += 0.1f;
-//			}
-		
-			
-		
+			if(forceUp > 0.31f)
+			forceUp -= 0.3f;			
+		}		
 	}
-
+	void FixedUpdate()		
+	{	
+		//rigidbody.AddRelativeForce(0,0,10,ForceMode.Acceleration);	
+		rigidbody.AddRelativeForce(0, forceUp, forceForw);			
+	}
 	// Update is called once per frame
 	void Update () {
 	//inside the Update method
@@ -104,33 +58,21 @@ public class PlayerClass : MonoBehaviour {
 			
 		}
 		
-//		if(Input.GetKey("left"))
-//		{
-//				
-//			transform.Rotate(0,0f,3f);
-//				//transform.Rotate(new Vector3( 3, 0, 0));
-//			//return;
-//		}
-//		if(Input.GetKey("right")) {
-//			
-//			transform.Rotate(0,0f,-3f);
-//			//transform.Rotate(new Vector3( -3, 0, 0));
-//		}
-//		if(Input.GetKey("up") && speed < 15 && nitro > 1) {
-//			speed += 0.5f;
-//			nitro--;
-//		}
-//		
-//		if(Input.GetKey("down") && speed < 15) {
-//			//speed += 0.1f;
-//		}
-		/*if (transform.position.x > 40) {
-			//get new speed
-			//speed = Random.Range(8f,12f);
-			transform.position = new Vector3( -6f, transform.position.y, transform.position.z );
-			
+		if(Input.GetKey("up"))
+		{
+			if(forceForw < 30)
+				forceForw += 0.1f;
+		}
+		if(Input.GetKey("down"))
+		{
+			if(forceForw > 1)
+				forceForw -= 0.1f;	
+		}
 		
-		}*/
-		transform.Translate(0, 0, speed * Time.deltaTime);
+		
+
+		//transform.Translate(0, 0, speed * Time.deltaTime);
+		
+		
 	}
 }
